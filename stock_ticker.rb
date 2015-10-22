@@ -1,15 +1,18 @@
+require 'rubygems'
 require 'httparty'
 require 'nokogiri'
 
-print "What stock do you want to see? Please enter the symbol (ex: aapl for Apple): "
-@user_stock = gets.chomp
-# class StockTicker
-  # attr_reader :current_price_ticker
 
-  # def initialize(user_stock)
+class StockTicker
+  include HTTParty
+  include Nokogiri
+
+  attr_reader :current_price_ticker, :user_stock
+
+  def initialize(user_stock)
     @stock = HTTParty.get("http://finance.yahoo.com/q?s=#{@user_stock}")
 
-  # end
+  end
 
   @dom = Nokogiri::HTML(@stock.body)
 
@@ -22,12 +25,12 @@ print "What stock do you want to see? Please enter the symbol (ex: aapl for Appl
     prev_close = @dom.xpath("//td[@class='yfnc_tabledata1']").first
     puts "Previous Closing Price for #{@user_stock.upcase}: $#{prev_close.content}"
   end
-# end
+end
 
-get_current_price
-get_prev_close
-
-
-# stockticker1 = StockTicker.new(user_stock)
-# stockticker1.get_current_price
-# stockticker1.get_prev_close
+print "What stock do you want to see? Please enter the symbol (ex: aapl for Apple): "
+chosen_stock = gets.chomp
+# get_current_price
+# get_prev_close
+stockticker1 = StockTicker.new(chosen_stock)
+stockticker1.get_current_price
+stockticker1.get_prev_close
